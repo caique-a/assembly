@@ -8,6 +8,7 @@ title jogo da velha
             db 0,0,0
   mensagemEntradaLinha db 'Insira a linha de entrada (1 - 3): $'
   mensagemEntradaColuna db 'Insira a coluna de entrada (1 - 3): $'
+  mensagemPosicaoOcupada db 'Posicao ja ocupada! Tente novamente.', 13, 10, '$'
   linha db ?
   coluna db ?
   usuarioAtivo dw 0
@@ -151,6 +152,30 @@ main proc
   dec linha
   dec coluna
 
+  ; Verifica se a posicao ja esta ocupada
+  push ax
+  push bx
+  push si
+
+  mov al, linha
+  mov bl, 3
+  mul bl
+  mov ah, 0
+  mov bx, ax
+
+  mov al, coluna
+  mov ah, 0
+  mov si, ax
+
+  mov al, tabuleiro[bx][si]
+  cmp al, 0
+
+  pop si
+  pop bx
+  pop ax
+
+  jne entrada_invalida
+
   ; Adiciona X ou O na matriz
   cmp usuarioAtivo, 0
   je adiciona_X
@@ -172,6 +197,12 @@ main proc
 
   ; Verifica se empatou
 
+  jmp main_loop
+
+  entrada_invalida:
+  lea dx, mensagemPosicaoOcupada
+  mov ah, 9
+  int 21h
   jmp main_loop
 
   mov ah, 4ch ; Fim do programa
