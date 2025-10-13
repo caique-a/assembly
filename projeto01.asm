@@ -15,35 +15,49 @@ title jogo da velha
 
 .code
 adicionar_X proc
-  push bx
   push ax
+  push bx
+  push si
+
+  ; calcula o offset da linha (linha * 3) e coloca em BX
+  mov al, linha
+  mov bl, 3
+  mul bl
+  mov ah, 0
+  mov bx, ax
 
   mov al, coluna
   mov ah, 0
-  
-  mov bl, linha
-  mov bh, 0
-
   mov si, ax
+
   mov tabuleiro[bx][si], 'X'
-  pop ax
+
+  pop si
   pop bx
+  pop ax
   ret
 adicionar_X endp
 adicionar_O proc
-  push bx
   push ax
+  push bx
+  push si
+
+  ; calcula o offset da linha (linha * 3) e coloca em BX
+  mov al, linha
+  mov bl, 3
+  mul bl
+  mov ah, 0
+  mov bx, ax
 
   mov al, coluna
   mov ah, 0
-  
-  mov bl, linha
-  mov bh, 0
-
   mov si, ax
+
   mov tabuleiro[bx][si], 'O'
-  pop ax
+
+  pop si
   pop bx
+  pop ax
   ret
 adicionar_O endp
 nl proc
@@ -148,6 +162,7 @@ main proc
   call adicionar_X
 
   continua:
+  ; Troca o usuário ativo
   push usuarioAtivo
   push usuarioInativo
   pop usuarioAtivo
