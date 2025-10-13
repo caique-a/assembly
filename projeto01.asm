@@ -10,8 +10,42 @@ title jogo da velha
   mensagemEntradaColuna db 'Insira a coluna de entrada (1 - 3): $'
   linha db ?
   coluna db ?
+  usuarioAtivo dw 0
+  usuarioInativo dw 1
 
 .code
+adicionar_X proc
+  push bx
+  push ax
+
+  mov al, coluna
+  mov ah, 0
+  
+  mov bl, linha
+  mov bh, 0
+
+  mov si, ax
+  mov tabuleiro[bx][si], 'X'
+  pop ax
+  pop bx
+  ret
+adicionar_X endp
+adicionar_O proc
+  push bx
+  push ax
+
+  mov al, coluna
+  mov ah, 0
+  
+  mov bl, linha
+  mov bh, 0
+
+  mov si, ax
+  mov tabuleiro[bx][si], 'O'
+  pop ax
+  pop bx
+  ret
+adicionar_O endp
 nl proc
   mov ah, 2
   mov dl, 13
@@ -36,9 +70,20 @@ print_tabuleiro proc
 
   loop_coluna:
   mov dl, tabuleiro[bx][si]
-  or dl, 30h
+  cmp dl, 'O'
+  je letra
+  cmp dl, 'X'
+  je letra
+  add dl, 30h
   mov ah, 2
   int 21h
+  jmp continua_print
+
+  letra:
+  mov ah, 2
+  int 21h
+
+  continua_print:
   mov dl, ' '
   int 21h
   inc si
@@ -93,6 +138,20 @@ main proc
   dec coluna
 
   ; Adiciona X ou O na matriz
+  cmp usuarioAtivo, 0
+  je adiciona_X
+
+  call adicionar_O
+  jmp continua
+
+  adiciona_X:
+  call adicionar_X
+
+  continua:
+  push usuarioAtivo
+  push usuarioInativo
+  pop usuarioAtivo
+  pop usuarioInativo
 
   ; Verifica se alguem ganhou, se X ganhou, ax = 1, se O ganhou, ax = 2, se ninguém ganhou, ax = 0
 

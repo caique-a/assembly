@@ -1,0 +1,18 @@
+TITLE DATA
+.MODEL small
+
+.DATA
+    NUM DW 15
+    PLUS DW 8
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    MOV AX, NUM
+    ADD AX, PLUS
+
+    MOV AH, 4Ch
+    INT 21h
+MAIN ENDP
+end MAIN

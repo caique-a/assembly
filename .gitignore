@@ -1,0 +1,60 @@
+# Visual Studio files and directories
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Build outputs and executables
+*.exe
+*.obj
+*.o
+*.lst
+*.map
+*.bin
+
+# Assembly specific build artifacts
+*.com
+*.sys
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Debug files
+*.pdb
+*.ilk
+
+# IDE specific
+*.cbp
+*.layout
+*.depend
+*.workspace
+
+# Backup files
+*.orig
+*.rej
+
+# Temporary assembly files
+temp.asm
+test.asm

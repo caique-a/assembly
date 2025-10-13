@@ -1,0 +1,15 @@
+TITLE SWAP
+.MODEL small
+
+.CODE
+MAIN PROC
+    MOV AX, 100
+    MOV BX, 200
+    MOV CX, AX
+    MOV AX, BX
+    MOV BX, CX
+
+    MOV AH, 9Ch
+    INT 21h
+MAIN ENDP
+end MAIN
