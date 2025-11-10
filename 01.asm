@@ -5,7 +5,7 @@
 	matriz db N dup (N dup(?))
 
 .code
-le proc
+ler proc
 	; Le uma matriz N x N
 	; Entrada -> BX: Offset da matriz
 	; Saída -> Matriz lida na memoria
@@ -36,7 +36,7 @@ le proc
 	pop bx
 	pop ax
 	ret
-le endp
+ler endp
 nl proc
 	push ax
 	push dx
@@ -82,14 +82,47 @@ imprime proc
 	ret
 imprime endp
 troca proc
-	; Troca elementos acima da diagonal principal por elementos abaixo
-	; Entrada -> BX: Offset da matriz
-	; Saída -> Troca os elementos
+	; Procedimento para trocar linha por coluna em uma matriz
+	; Entrada -> BX: Endereço base da matriz
+	; Saída -> Altera a matriz na memória
+	push ax
 	push bx
 	push cx
 	push dx
 	push si
 	push di
+
+	mov ch, N
+	mov cl, N
+
+	shr ch, 1
+	shr cl, 1
+
+	xor bp, bp ; linha atual
+
+	loop_linha:
+	mov si, bp ; coluna atual
+	loop_coluna:
+	mov al, matriz[bp][si]
+	mov ah, matriz[si][bp]
+	mov matriz[bp][si], ah
+	mov matriz[si][bp], al
+	inc si
+
+	dec ch
+	jnz loop_coluna
+	add di, N
+	inc di
+
+	dec cl
+	jnz loop_linha
+
+	pop di
+	pop si
+	pop dx
+	pop cx
+	pop bx
+	pop ax
 	ret
 troca endp
 main proc
@@ -97,8 +130,11 @@ main proc
 	mov ds, ax
 	
 	lea bx, matriz
-	call le
+	call ler
 	call nl
+	call imprime
+	call nl
+	call troca
 	call imprime
 
 	mov ah, 4ch
