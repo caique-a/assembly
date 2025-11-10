@@ -82,47 +82,63 @@ imprime proc
 	ret
 imprime endp
 troca proc
-	; Procedimento para trocar linha por coluna em uma matriz
+	; Procedimento para trocar linha por columa em uma matriz
 	; Entrada -> BX: Endereço base da matriz
-	; Saída -> Altera a matriz na memória
+	; Assume N definido como tamanho da matriz
+	; Saída -> Transpõe a matriz
 	push ax
 	push bx
 	push cx
 	push dx
 	push si
 	push di
+	push bp
 
-	mov ch, N
-	mov cl, N
-
-	shr ch, 1
-	shr cl, 1
-
-	xor bp, bp ; linha atual
-
+	xor si, si ; linha atual
 	loop_linha:
-	mov si, bp ; coluna atual
+	mov di, si ; di = coluna atual (começa na linha atual)
+	inc di ; pula a diagonal
 	loop_coluna:
-	mov al, matriz[bp][si]
-	mov ah, matriz[si][bp]
-	mov matriz[bp][si], ah
-	mov matriz[si][bp], al
-	inc si
+	cmp di, N ; terminou colunas
+	jae fim_linha
 
-	dec ch
-	jnz loop_coluna
-	add di, N
-	inc di
+	; calcula offset para matriz[si][di]
+	mov ax, si
+	mov cl, N
+	mul cl ; ax = si * N
+	add ax, di ; ax = si * N + di
+	mov bp, ax ; bp = offset de [si][di]
 
-	dec cl
-	jnz loop_linha
+	; calcula offset para matriz [di][si]
+	mov ax, di
+	mov cl, N
+	mul cl ; ax = di * N
+	add ax, si ; ax = di * N + si
 
-	pop di
-	pop si
-	pop dx
-	pop cx
+	; trocar os elementos
+	push bx
+	add bx, bp
+	mov dl, [bx] ; dl = matriz[si][di]
 	pop bx
-	pop ax
+
+	push bx
+	add bx, ax
+	mov dh, [bx] ; dh = matriz[di][si]
+	mov [bx], dl ; matriz[di][si] = dl
+	pop bx
+
+	push bx
+	add bx, bp
+	mov [bx], dh ; matriz[si][di] = dh
+	pop bx
+
+	inc di
+	jmp loop_coluna
+
+	fim_linha:
+	inc si
+	cmp si, N
+	jb loop_linha
 	ret
 troca endp
 main proc
